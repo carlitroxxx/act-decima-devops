@@ -4,37 +4,36 @@ on:
   push:
     branches: ["main"]
 
-  jobs:
-    build-and-push:
-      runs-on: ubuntu-latest
-
-      steps:
-        - name: Checkout report
-          uses: actions/checkout@v4
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout report
+        uses: actions/checkout@v4
         
-        - name: Login Docker Hub
-          uses: docker/login-action@3
-          with:
-            username: ${{ secrets.DOCKERHUB_USERNAME }}
-            password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login Docker Hub
+        uses: docker/login-action@3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-        - name: Build and push docker hub
-          run: |
-            docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest ./frontend
-            docker push ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
+      - name: Build and push docker hub
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest ./frontend
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
         
-        - name: Configure AWS credentials
-          uses: aws-actions/configure-aws-credentials@v4
-          with:
-            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            aws-region: ${{ secrets.AWS_REGION }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-        - name: Login AWS ECR
-          uses: aws-actions/amazon-ecr-login@v2
+      - name: Login AWS ECR
+        uses: aws-actions/amazon-ecr-login@v2
 
-        - name: Build and push AWS ECR
-          run: |
-            docker build -t frontend ./frontend
-            docker tag frontend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/frontend:latest
-            docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/frontend:latest
+      - name: Build and push AWS ECR
+        run: |
+          docker build -t frontend ./frontend
+          docker tag frontend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/frontend:latest
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/frontend:latest
