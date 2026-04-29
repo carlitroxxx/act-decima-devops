@@ -1,4 +1,4 @@
-name: Basedatos CI/CD
+name: Basedatos CI/CDx
 
 on:
   push:
