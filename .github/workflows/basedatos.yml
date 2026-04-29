@@ -1,11 +1,8 @@
-name: Basedatos CI/CDx
+name: Basedatos CI/CD
 
 on:
   push:
     branches: ["main"]
-    patchs:
-      - "basedatos/**"
-      - ".github/workflows/basedatos.yml"
 
   jobs:
     build-and-push:
